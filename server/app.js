@@ -57,19 +57,70 @@ connection.connect(error => {
 //     result({ kind: "not_found" }, null);
 //   });
 
-  const newCustomer = {
-    name: 'Luke',
-    email: 'Luke@aol.com'
-  };
+  // const newCustomer = {
+  //   name: 'Luke',
+  //   email: 'Luke@aol.com'
+  // };
   
   // 
-  connection.query("INSERT INTO Customer SET ?", newCustomer, (err, res) => {
+  // connection.query("INSERT INTO Customer SET ?", newCustomer, (err, res) => {
+  //   if (err) {
+  //     console.log("error: ", err);
+  //     result(err, null);
+  //     return;
+  //   }
+  
+  //   console.log("created cutomer: ", { id: res.insertId, ...newCustomer });
+  //   result(null, { id: res.insertId, ...newCustomer });
+  // });
+
+  // Express API endpoint
+  app.get('/customer',(req,res) => {res.json({message:"Testing a server page"})
+  });
+
+  app.get('/customers',(req,res) => {
+    connection.query("SELECT * FROM Customer", (err, data) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
-  
-    console.log("created cutomer: ", { id: res.insertId, ...newCustomer });
-    result(null, { id: res.insertId, ...newCustomer });
+    console.log("Customers: ", data);
+    res.json(data);
+    });
+    
+  //   res.json({message:"Testing a server page"})
   });
+
+//   app.get('/customer',(req,res) => {res.json({message:"Testing a server page"})
+// });
+
+app.post('/newcustomer',(req,res) => {
+  connection.query("INSERT INTO Customer SET ?", req, (err, data) => {
+  if (err) {
+    console.log("error: ", err);
+    result(err, null);
+    return;
+  }
+  console.log("newcustomers: ", data);
+  // res.json(data);
+  });
+  
+//   res.json({message:"Testing a server page"})
+});
+
+
+// app.get('/search', (req, res) => {
+//   connection.query("SELECT * FROM Customer WHERE CONTAINS(name, req.searchTerm)", (err, res) => {
+//     if (err) {
+//       console.log("error: ", err);
+//       result(err, null);
+//       return;
+//     }
+  
+//     console.log("created cutomer: ", { id: res.insertId, ...searchResult });
+//     result(null, { id: res.insertId, ...searchResult });
+//   });
+//   res.json(searchResult)
+// });
+

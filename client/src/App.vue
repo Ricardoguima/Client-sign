@@ -6,6 +6,78 @@ import countries from './components/countries.json'
 import {ref, computed} from 'vue'
 
 export default {
+  data() {
+    return {
+      getResult: null,
+      newCustomer: {
+        name:"",
+        email:""
+      }
+    }
+  },
+  methods: {
+    fortmatResponse(res) {
+      return JSON.stringify(res, null, 2);
+    },
+    async saveNewCustomer() {
+      var data = {
+        name: this.newCustomer.name,
+        email: this.newCustomer.email
+      };
+
+      const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  };
+  const response = await fetch("http://localhost:8081/newcustomer", requestOptions);
+  const responseData = await response.json();
+  // this.postId = data.id;
+    },
+
+      // TutorialDataService.create(data)
+      //   .then(response => {
+      //     this.tutorial.id = response.data.id;
+      //     console.log(response.data);
+      //     this.submitted = true;
+      //   })
+      //   .catch(e => {
+      //     console.log(e);
+      //   });
+    //},
+    
+    // newTutorial() {
+    //   this.submitted = false;
+    //   this.tutorial = {};
+    // }
+  // },
+    async getAllData() {
+      try {
+        const res = await fetch('http://localhost:8081/customers');
+
+        if (!res.ok) {
+          const message = `An error has occured: ${res.status} - ${res.statusText}`;
+          throw new Error(message);
+        }
+
+        const data = await res.json();
+
+        const result = {
+          status: res.status + "-" + res.statusText,
+          headers: {
+            "Content-Type": res.headers.get("Content-Type"),
+            "Content-Length": res.headers.get("Content-Length"),
+          },
+          length: res.headers.get("Content-Length"),
+          data: data,
+        };
+
+        this.getResult = this.fortmatResponse(result);
+      } catch (err) {
+        this.getResult = err.message;
+      }
+    },
+  },
   setup() {
     let searchTerm = ref('')
 
@@ -39,7 +111,7 @@ export default {
       selectedCountry
     }
   }
-} 
+}
 </script>
 
 <template>
@@ -52,6 +124,34 @@ export default {
   </header>
 
   <main>
+    <div>
+      <div class="form-group">
+        <label for="Name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          required
+          v-model="newCustomer.name"
+          name="title"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input
+          class="form-control"
+          id="description"
+          required
+          v-model="newCustomer.email"
+          name="description"
+        />
+      </div>
+
+      <button @click="saveNewCustomer" class="btn btn-success">Submit</button>
+    </div>
+    <button class="btn btn-sm btn-primary" @click="getAllData">Get All</button>
+    <div v-if="getResult" class="alert alert-secondary mt-2" role="alert"><pre>{{getResult}}</pre></div>
     <TheWelcome />
     <div class="max-w-xs relative space-y-3">
       <label
