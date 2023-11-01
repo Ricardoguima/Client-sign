@@ -8,7 +8,7 @@ import {ref, computed} from 'vue'
 export default {
   data() {
     return {
-      getResult: null,
+      getResult: [],
       newCustomer: {
         name:"",
         email:""
@@ -31,6 +31,21 @@ export default {
     body: JSON.stringify(data)
   };
   const response = await fetch("http://localhost:8081/newcustomer", requestOptions);
+  const responseData = await response.json();
+  // this.postId = data.id;
+    },
+
+    async saveNewSignature() {
+      var data = {
+       customerId: 1
+      };
+
+      const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  };
+  const response = await fetch("http://localhost:8081/newsignature", requestOptions);
   const responseData = await response.json();
   // this.postId = data.id;
     },
@@ -72,7 +87,7 @@ export default {
           data: data,
         };
 
-        this.getResult = this.fortmatResponse(result);
+        this.getResult = (result.data);
       } catch (err) {
         this.getResult = err.message;
       }
@@ -136,7 +151,7 @@ export default {
           name="title"
         />
       </div>
-
+      
       <div class="form-group">
         <label for="Email">Email</label>
         <input
@@ -148,10 +163,43 @@ export default {
         />
       </div>
 
+
       <button @click="saveNewCustomer" class="btn btn-success">Submit</button>
     </div>
+    
+
+    <div>
+      <div class="form-group">
+        <label for="Name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          required
+          v-model="newCustomer.name"
+          name="title"
+        />
+      </div>
+      
+      
+      <button @click="saveNewSignature" class="btn btn-success">Sign In</button>
+    </div>
+
+
     <button class="btn btn-sm btn-primary" @click="getAllData">Get All</button>
-    <div v-if="getResult" class="alert alert-secondary mt-2" role="alert"><pre>{{getResult}}</pre></div>
+    <table>
+     <tr v-for="customer in getResult">
+				<td>
+          {{customer.name}}
+        </td>
+        <td>
+          {{customer.email}}
+        </td>
+     </tr> 
+    </table>
+      
+			
+
     <TheWelcome />
     <div class="max-w-xs relative space-y-3">
       <label

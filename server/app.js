@@ -96,13 +96,27 @@ connection.connect(error => {
 // });
 
 app.post('/newcustomer',(req,res) => {
-  connection.query("INSERT INTO Customer SET ?", req, (err, data) => {
+  connection.query("INSERT INTO Customer SET ?", req.body, (err, data) => {
   if (err) {
     console.log("error: ", err);
     result(err, null);
     return;
   }
   console.log("newcustomers: ", data);
+  // res.json(data);
+  });
+  
+//   res.json({message:"Testing a server page"})
+});
+
+app.post('/newsignature',(req,res) => {
+  connection.query("INSERT INTO SignIn SET ?", req.body, (err, data) => {
+  if (err) {
+    console.log("error: ", err);
+    result(err, null);
+    return;
+  }
+  console.log("newsignature: ", data);
   // res.json(data);
   });
   
