@@ -1,7 +1,6 @@
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
-
 import countries from './components/countries.json'
 import {ref, computed} from 'vue'
 
@@ -131,8 +130,7 @@ export default {
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
+    <img alt="Gracie logo" class="logo" src="./components/icons/pic1.svg" width="125" height="125" />
     <div class="wrapper">
       <HelloWorld msg="Ricky!" />
     </div>
