@@ -10,11 +10,24 @@ export default {
       getResult: [],
       newCustomer: {
         name:"",
-        email:""
-      }
+        email:"",
+        id:null
+      },
+      showCustomerListView: true,
+      selectedCustomer:  {
+        name:"",
+        email:"",
+        id:null
+      },
+        
     }
   },
+  beforeMount() {
+   this.getAllData()
+},
   methods: {
+  
+
     fortmatResponse(res) {
       return JSON.stringify(res, null, 2);
     },
@@ -36,7 +49,7 @@ export default {
 
     async saveNewSignature() {
       var data = {
-       customerId: 1
+       customerId: this.selectedCustomer.id
       };
 
       const requestOptions = {
@@ -47,6 +60,12 @@ export default {
   const response = await fetch("http://localhost:8081/newsignature", requestOptions);
   const responseData = await response.json();
   // this.postId = data.id;
+    },
+
+    selectCustomer(customer) {
+      console.log(customer.id);
+      this.selectedCustomer = customer;
+      this.showCustomerListView = false
     },
 
       // TutorialDataService.create(data)
@@ -137,7 +156,7 @@ export default {
   </header>
 
   <main>
-    <div>
+    <!-- <div>
       <div class="form-group">
         <label for="Name">Name</label>
         <input
@@ -148,8 +167,7 @@ export default {
           v-model="newCustomer.name"
           name="title"
         />
-      </div>
-      
+      </div>      
       <div class="form-group">
         <label for="Email">Email</label>
         <input
@@ -163,10 +181,10 @@ export default {
 
 
       <button @click="saveNewCustomer" class="btn btn-success">Submit</button>
-    </div>
+    </div> -->
     
 
-    <div>
+    <!-- <div>
       <div class="form-group">
         <label for="Name">Name</label>
         <input
@@ -181,12 +199,16 @@ export default {
       
       
       <button @click="saveNewSignature" class="btn btn-success">Sign In</button>
-    </div>
+    </div> -->
 
 
-    <button class="btn btn-sm btn-primary" @click="getAllData">Get All</button>
+    <!-- <button class="btn btn-sm btn-primary" @click="getAllData">Get All</button> -->
+    <transition-group name="view">
+    <div   v-if = "showCustomerListView">
     <table>
-     <tr v-for="customer in getResult">
+     <tr v-for="customer in getResult" v-on:click="selectCustomer(customer)">
+    
+
 				<td>
           {{customer.name}}
         </td>
@@ -195,19 +217,36 @@ export default {
         </td>
      </tr> 
     </table>
-      
+  </div>
 			
+  <div v-else>
+      <div class="form-group">
+        <label for="Name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          required
+          v-model="selectedCustomer.name"
+          name="title"
+        />
+      </div>
+      
+      
+      <button @click="saveNewSignature" class="btn btn-success">Sign In</button>
+    </div>
 
-    <TheWelcome />
+  </transition-group>
+    <!-- <TheWelcome />
     <div class="max-w-xs relative space-y-3">
       <label
         for="search"
         class="text-gray-900"
       >
         Type the name of a country to search
-      </label>
+      </label> -->
 
-      <input
+      <!-- <input
         type="text"
         id="search"
         v-model="searchTerm"
@@ -238,7 +277,7 @@ export default {
       >
         You have selected: <span class="font-semibold">{{ selectedCountry }}</span>
       </p>
-    </div>
+    </div> -->
   </main>
 </template>
 

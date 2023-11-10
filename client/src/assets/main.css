@@ -62,6 +62,21 @@ button {
 }
 
 button:hover {
-  background: #f3dd19;
+  background: #dcc810;
     transition: all 0.3s ease;
+}
+
+.view-enter-active, .view-leave-active {
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease;
+}
+.view-enter-active {
+  transition-delay: 0.5s;
+}
+
+.view-enter, .view-leave-to {
+opacity: 0;
+}
+
+.view-enter-to, .view-leave {
+opacity: 1;
 }
