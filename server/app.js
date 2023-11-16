@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mysql = require('mysql2');
 
+
 // Express setup
 const app = express();
 app.use(cors());
@@ -79,7 +80,13 @@ connection.connect(error => {
   });
 
   app.get('/customers',(req,res) => {
-    connection.query("SELECT * FROM Customer", (err, data) => {
+    console.log (req.query.programid);
+    var query;
+    if (req.query.programid)
+      query = "SELECT * FROM Customer WHERE ProgramId = " +"'"+req.query.programid+"'";
+    else 
+      query = "SELECT * FROM Customer";
+    connection.query(query, (err, data) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);

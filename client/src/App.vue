@@ -2,11 +2,13 @@
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
 import countries from './components/countries.json'
+// import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import {ref, computed} from 'vue'
 
 export default {
   data() {
     return {
+      activeItem: 'home',
       getResult: [],
       newCustomer: {
         name:"",
@@ -23,10 +25,17 @@ export default {
     }
   },
   beforeMount() {
-   this.getAllData()
+   this.getAllData();
+   this.getCustomersByProgramId(6);
 },
   methods: {
   
+    isActive (menuItem) {
+      return this.activeItem === menuItem
+    },
+    setActive (menuItem) {
+      this.activeItem = menuItem
+    },
 
     fortmatResponse(res) {
       return JSON.stringify(res, null, 2);
@@ -110,7 +119,39 @@ export default {
         this.getResult = err.message;
       }
     },
+
+    async getCustomersByProgramId(ProgramId) {
+      try {
+        const res = await fetch('http://localhost:8081/customers?programid='+ ProgramId);
+
+        if (!res.ok) {
+          const message = `An error has occured: ${res.status} - ${res.statusText}`;
+          throw new Error(message);
+        }
+
+        const data = await res.json();
+
+        const result = {
+          status: res.status + "-" + res.statusText,
+          headers: {
+            "Content-Type": res.headers.get("Content-Type"),
+            "Content-Length": res.headers.get("Content-Length"),
+          },
+          length: res.headers.get("Content-Length"),
+          data: data,
+        };
+
+        this.getResult = (result.data);
+      } catch (err) {
+        this.getResult = err.message;
+      }
+    },
+ 
+
   },
+
+
+
   setup() {
     let searchTerm = ref('')
 
@@ -156,55 +197,41 @@ export default {
   </header>
 
   <main>
-    <!-- <div>
-      <div class="form-group">
-        <label for="Name">Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="title"
-          required
-          v-model="newCustomer.name"
-          name="title"
-        />
-      </div>      
-      <div class="form-group">
-        <label for="Email">Email</label>
-        <input
-          class="form-control"
-          id="description"
-          required
-          v-model="newCustomer.email"
-          name="description"
-        />
-      </div>
-
-
-      <button @click="saveNewCustomer" class="btn btn-success">Submit</button>
-    </div> -->
     
-
-    <!-- <div>
-      <div class="form-group">
-        <label for="Name">Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="title"
-          required
-          v-model="newCustomer.name"
-          name="title"
-        />
-      </div>
-      
-      
-      <button @click="saveNewSignature" class="btn btn-success">Sign In</button>
-    </div> -->
-
-
+    
+    
     <!-- <button class="btn btn-sm btn-primary" @click="getAllData">Get All</button> -->
     <transition-group name="view">
-    <div   v-if = "showCustomerListView">
+    <div  v-if = "showCustomerListView">
+      <!-- <ul class="nav nav-tabs nav-justified">
+      <li v-on:click="getCustomersByProgramId(4)" class="nav-item">
+       Kids
+      </li>
+      <li v-on:click="getCustomersByProgramId(5)" class="nav-item">
+       Juniors
+      </li>
+      <li v-on:click="getCustomersByProgramId(6)" class="nav-item">
+       Adults
+      </li>
+    </ul> -->
+    
+    <ul class="nav nav-tabs nav-justified">
+      <li class="nav-item">
+        <a class="nav-link" v-on:click.prevent="setActive('kids')" :class="{ active: isActive('kids') }" v-on:click="getCustomersByProgramId(4)">Kids</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" v-on:click.prevent="setActive('juniors')" :class="{ active: isActive('juniors') }" v-on:click="getCustomersByProgramId(5)">Juniors</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" v-on:click.prevent="setActive('adults')" :class="{ active: isActive('adults') }"  v-on:click="getCustomersByProgramId(6)">Adults</a>
+      </li>
+    </ul>
+    <div class="tab-content py-3" id="myTabContent">
+      <div class="tab-pane fade" :class="{ 'active show': isActive('kids') }" id="kids">Kids</div>
+      <div class="tab-pane fade" :class="{ 'active show': isActive('juniors') }" id="juniors">Juniors</div>
+      <div class="tab-pane fade" :class="{ 'active show': isActive('adults') }" id="adults">Adults</div>
+    </div>
+
     <table>
      <tr v-for="customer in getResult" v-on:click="selectCustomer(customer)">
     
@@ -221,9 +248,9 @@ export default {
 			
   <div v-else>
       <div class="form-group">
-        <label for="Name">Name</label>
+        <label for="Name">Welcome</label>
         <input
-          type="text"
+          type="text" disabled
           class="form-control"
           id="title"
           required
