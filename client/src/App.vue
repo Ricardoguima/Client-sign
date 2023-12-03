@@ -1,5 +1,5 @@
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
 import TheWelcome from './components/TheWelcome.vue'
 import countries from './components/countries.json'
 // import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
@@ -10,11 +10,7 @@ export default {
     return {
       activeItem: 'home',
       getResult: [],
-      newCustomer: {
-        name:"",
-        email:"",
-        id:null
-      },
+     
       showCustomerListView: true,
       selectedCustomer:  {
         name:"",
@@ -25,8 +21,8 @@ export default {
     }
   },
   beforeMount() {
-   this.getAllData();
-   this.getCustomersByProgramId(6);
+  //  this.getAllData();
+   this.getCustomersByProgramId();
 },
   methods: {
   
@@ -40,36 +36,22 @@ export default {
     fortmatResponse(res) {
       return JSON.stringify(res, null, 2);
     },
-    async saveNewCustomer() {
-      var data = {
-        name: this.newCustomer.name,
-        email: this.newCustomer.email
-      };
+   
 
-      const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  };
-  const response = await fetch("http://localhost:8081/newcustomer", requestOptions);
-  const responseData = await response.json();
-  // this.postId = data.id;
-    },
+  //   async saveNewSignature() {
+  //     var data = {
+  //      customerId: this.selectedCustomer.id
+  //     };
 
-    async saveNewSignature() {
-      var data = {
-       customerId: this.selectedCustomer.id
-      };
-
-      const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  };
-  const response = await fetch("http://localhost:8081/newsignature", requestOptions);
-  const responseData = await response.json();
-  // this.postId = data.id;
-    },
+  //     const requestOptions = {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify(data)
+  // };
+  // const response = await fetch("http://localhost:8081/newsignature", requestOptions);
+  // const responseData = await response.json();
+  // // this.postId = data.id;
+  //   },
 
     selectCustomer(customer) {
       console.log(customer.id);
@@ -192,13 +174,14 @@ export default {
   <header>
     <img alt="Gracie logo" class="logo" src="./components/icons/pic1.svg" width="125" height="125" />
     <div class="wrapper">
-      <HelloWorld msg="Ricky!" />
+      
     </div>
   </header>
 
   <main>
     
-    
+
+  <router-view/>
     
     <!-- <button class="btn btn-sm btn-primary" @click="getAllData">Get All</button> -->
     <transition-group name="view">
@@ -215,7 +198,7 @@ export default {
       </li>
     </ul> -->
     
-    <ul class="nav nav-tabs nav-justified">
+    <!-- <ul class="nav nav-tabs nav-justified">
       <li class="nav-item">
         <a class="nav-link" v-on:click.prevent="setActive('kids')" :class="{ active: isActive('kids') }" v-on:click="getCustomersByProgramId(4)">Kids</a>
       </li>
@@ -230,7 +213,7 @@ export default {
       <div class="tab-pane fade" :class="{ 'active show': isActive('kids') }" id="kids">Kids</div>
       <div class="tab-pane fade" :class="{ 'active show': isActive('juniors') }" id="juniors">Juniors</div>
       <div class="tab-pane fade" :class="{ 'active show': isActive('adults') }" id="adults">Adults</div>
-    </div>
+    </div> -->
 
     <table>
      <tr v-for="customer in getResult" v-on:click="selectCustomer(customer)">
@@ -247,7 +230,7 @@ export default {
   </div>
 			
   <div v-else>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="Name">Welcome</label>
         <input
           type="text" disabled
@@ -257,7 +240,7 @@ export default {
           v-model="selectedCustomer.name"
           name="title"
         />
-      </div>
+      </div> -->
       
       
       <button @click="saveNewSignature" class="btn btn-success">Sign In</button>
