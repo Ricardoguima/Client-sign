@@ -99,6 +99,27 @@ connection.connect(error => {
   //   res.json({message:"Testing a server page"})
   });
 
+  app.get('/customerDetails',(req,res) => {
+    console.log (req.query.email);
+    var query;
+    if (req.query.email)
+      query = "SELECT * FROM Customer WHERE Email = " +"'"+req.query.email+"'";
+    else 
+      query = "SELECT * FROM Customer";
+    connection.query(query, (err, data) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("Customers: ", data);
+    res.json(data);
+    });
+    
+  //   res.json({message:"Testing a server page"})
+  });
+
+
 //   app.get('/customer',(req,res) => {res.json({message:"Testing a server page"})
 // });
 
@@ -110,7 +131,7 @@ app.post('/newcustomer',(req,res) => {
     return;
   }
   console.log("newcustomers: ", data);
-  // res.json(data);
+  res.json(data);
   });
   
 //   res.json({message:"Testing a server page"})
